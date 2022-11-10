@@ -2,7 +2,7 @@ package cube
 
 import kotlin.math.sqrt
 
-class Cube(var pos: Vector3, var perspectiveOrigin: Vector3, var edgeSize: Float, val perspectiveMultiplier: Float) {
+class Cube(var pos: Vector3, var perspectiveOrigin: Vector3, private val edgeSize: Float, private val perspectiveMultiplier: Float) {
 
     fun getDisplayFaces(): List<Array<Vector3>> {
         // distance offset between the center and a point of the cube

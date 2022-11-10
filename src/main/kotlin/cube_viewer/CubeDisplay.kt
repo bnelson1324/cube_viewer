@@ -5,21 +5,45 @@ import cube.Vector3
 import java.awt.BasicStroke
 import java.awt.Graphics
 import java.awt.Graphics2D
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
 import javax.swing.JPanel
+import javax.swing.SwingUtilities
 
 
-class CubeDisplay(cubeX: Float, cubeY: Float): JPanel() {
+class CubeDisplay(cubeX: Float, cubeY: Float) : JPanel() {
 
     private val perspectiveConst: Float = 50f
 
     private val cube = Cube(Vector3(0f, 0f, 200f), Vector3(cubeX, cubeY, -100f), 50f, perspectiveConst)
 
+    init {
+        addMouseMotionListener(object : MouseAdapter() {
+            override fun mouseMoved(e: MouseEvent?) {
+                super.mouseMoved(e)
+                if(e?.x == null || e?.y == null) {
+                    return
+                }
+                val newX = e!!.x - width/2
+                val newY = e!!.y - height/2
+                cube.pos = Vector3(newX.toFloat(), newY.toFloat(), cube.pos.z)
+                SwingUtilities.invokeLater { repaint() }
+
+            }
+        })
+    }
+
+    /* drawing cube */
     override fun paintComponent(g: Graphics) {
+        // draw cube
         val g2d: Graphics2D = g as Graphics2D
         super.paintComponent(g)
         g2d.clearRect(0, 0, width, height)
         g2d.stroke = BasicStroke(6f)
         drawCube(g2d)
+
+        // move perspectiveOrigin to center of JPanel
+        cube?.perspectiveOrigin = Vector3(width/2f, height/2f, cube.perspectiveOrigin.z)
     }
 
     // draws cube
